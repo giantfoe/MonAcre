@@ -1,10 +1,10 @@
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Users, Clock } from "lucide-react"
+import { ArrowRight, Users, Clock, Layers } from "lucide-react"
+import Image from "next/image"
 
 export default function FeaturedPools() {
   // Mock data for featured pools
@@ -70,12 +70,20 @@ export default function FeaturedPools() {
   ]
 
   return (
-    <section className="py-16 md:py-24 bg-white dark:bg-background">
-      <div className="container px-4 md:px-6">
+    <section className="py-16 md:py-24 bg-gradient-to-b from-black to-gray-900 text-white relative overflow-hidden">
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxNSAwIEwgMCAxNSBNIDMwIDE1IEwgMTUgMzAgTSA0NSAzMCBMIDMwIDQ1IE0gNjAgNDUgTCA0NSA2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzMzIiBzdHJva2Utd2lkdGg9IjAuNSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-20"></div>
+
+      <div className="container px-4 md:px-6 relative z-10">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2 max-w-3xl mx-auto">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Featured Investment Pools</h2>
-            <p className="text-gray-600 dark:text-gray-400 text-lg md:text-xl max-w-[800px] mx-auto mt-4">
+            <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-sm mb-2">
+              <Layers className="h-3.5 w-3.5 mr-1.5 text-purple-400" />
+              <span>Trending Opportunities</span>
+            </div>
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-white">
+              Featured Investment Pools
+            </h2>
+            <p className="text-gray-300 text-lg md:text-xl max-w-[800px] mx-auto mt-4">
               Discover high-impact investment opportunities in Sierra Leone
             </p>
           </div>
@@ -84,48 +92,58 @@ export default function FeaturedPools() {
           {featuredPools.map((pool) => (
             <Card
               key={pool.id}
-              className="overflow-hidden transition-all hover:shadow-elevation-2 border-gray-200 dark:border-gray-800"
+              className="overflow-hidden transition-all hover:shadow-lg hover:shadow-purple-500/20 border-white/10 bg-white/5 backdrop-blur-sm rounded-xl group"
             >
               <CardHeader className="p-0">
-                <div className="h-48 bg-gray-100 dark:bg-gray-800">
-                  {/* Placeholder for project image */}
-                  <div className="flex h-full items-center justify-center">
-                    <span className="text-gray-400">Project Image</span>
+                <div className="h-48 relative overflow-hidden">
+                  <Image
+                    src="/images/sierra-leone-coast.jpeg"
+                    alt={pool.title}
+                    fill
+                    className="object-cover transition-transform group-hover:scale-105 duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
+
+                  {/* Futuristic overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-purple-900/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 overflow-hidden">
+                    <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </div>
+
+                  <div className="absolute bottom-0 left-0 p-4 w-full">
+                    <div className="flex justify-between items-center">
+                      <Badge variant="outline" className="bg-black/50 text-white border-white/20 backdrop-blur-sm">
+                        {pool.category}
+                      </Badge>
+                      <Badge
+                        variant="secondary"
+                        className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white border-0"
+                      >
+                        {pool.monthlyReturn} Monthly Return
+                      </Badge>
+                    </div>
                   </div>
                 </div>
               </CardHeader>
               <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-3">
-                  <Badge
-                    variant="outline"
-                    className="bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-800"
-                  >
-                    {pool.category}
-                  </Badge>
-                  <Badge
-                    variant="secondary"
-                    className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800"
-                  >
-                    {pool.monthlyReturn} Monthly Return
-                  </Badge>
-                </div>
-                <CardTitle className="mb-2 text-xl line-clamp-1">{pool.title}</CardTitle>
-                <CardDescription className="mb-4 line-clamp-2 text-gray-600 dark:text-gray-400">
-                  {pool.description}
-                </CardDescription>
+                <CardTitle className="mb-2 text-xl line-clamp-1 text-white">{pool.title}</CardTitle>
+                <CardDescription className="mb-4 line-clamp-2 text-gray-300">{pool.description}</CardDescription>
                 <div className="mb-4">
                   <div className="mb-1.5 flex items-center justify-between text-sm">
-                    <span className="font-medium">Raised: ${pool.raised.toLocaleString()}</span>
-                    <span className="font-medium text-purple-600">
+                    <span className="font-medium text-white">Raised: ${pool.raised.toLocaleString()}</span>
+                    <span className="font-medium text-purple-400">
                       {Math.round((pool.raised / pool.target) * 100)}%
                     </span>
                   </div>
-                  <Progress
-                    value={(pool.raised / pool.target) * 100}
-                    className="h-2 bg-gray-100 dark:bg-gray-700"
-                    indicatorClassName="bg-purple-600"
-                  />
-                  <div className="mt-1.5 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
+                  <div className="relative h-2 w-full bg-gray-800 rounded-full overflow-hidden">
+                    <div
+                      className="absolute top-0 left-0 h-full bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full"
+                      style={{ width: `${Math.round((pool.raised / pool.target) * 100)}%` }}
+                    >
+                      <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    </div>
+                  </div>
+                  <div className="mt-1.5 flex items-center justify-between text-sm text-gray-400">
                     <span>Goal: ${pool.target.toLocaleString()}</span>
                     <span className="flex items-center">
                       <Users className="mr-1 h-3 w-3" />
@@ -134,26 +152,33 @@ export default function FeaturedPools() {
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Avatar className="h-8 w-8 border border-gray-200 dark:border-gray-700">
+                  <Avatar className="h-8 w-8 border border-white/20 bg-black/50">
                     <AvatarImage src={pool.creatorAvatar || "/placeholder.svg"} alt={pool.creator} />
-                    <AvatarFallback className="bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300">
+                    <AvatarFallback className="bg-gradient-to-br from-purple-600 to-indigo-600 text-white">
                       {pool.creator.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
                   <div className="text-sm">
-                    <p className="font-medium">{pool.creator}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Project Creator</p>
+                    <p className="font-medium text-white">{pool.creator}</p>
+                    <p className="text-xs text-gray-400">Project Creator</p>
                   </div>
                 </div>
               </CardContent>
-              <CardFooter className="flex items-center justify-between border-t bg-gray-50 p-4 dark:bg-gray-900/50 dark:border-gray-800">
-                <span className="text-sm font-medium text-amber-600 dark:text-amber-400 flex items-center">
+              <CardFooter className="flex items-center justify-between border-t border-white/10 bg-black/30 p-4">
+                <span className="text-sm font-medium text-amber-400 flex items-center">
                   <Clock className="mr-1 h-4 w-4" />
                   {pool.timeLeft} left
                 </span>
                 <Link href={`/pool/${pool.id}`}>
-                  <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white">
-                    View Details <ArrowRight className="ml-1 h-4 w-4" />
+                  <Button
+                    size="sm"
+                    className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white border-0 relative overflow-hidden group"
+                  >
+                    <span className="absolute inset-0 w-full h-full bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                    <span className="relative flex items-center">
+                      View Details{" "}
+                      <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </span>
                   </Button>
                 </Link>
               </CardFooter>
@@ -165,8 +190,9 @@ export default function FeaturedPools() {
             <Button
               variant="outline"
               size="lg"
-              className="relative overflow-hidden group border-purple-200 text-purple-700 hover:bg-purple-50 hover:border-purple-300 dark:border-purple-800 dark:text-purple-400 dark:hover:bg-purple-900/30"
+              className="relative overflow-hidden group border-white/20 text-white hover:bg-white/5 backdrop-blur-sm"
             >
+              <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-purple-600/20 to-indigo-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
               <span className="relative z-10 flex items-center font-medium">
                 View All Projects{" "}
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
