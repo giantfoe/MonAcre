@@ -33,7 +33,7 @@ export default function Home() {
                   </Button>
                 </Link>
                 <Link href="/explore">
-                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 font-medium">
+                  <Button size="lg" variant="outline" className="border-white text-black hover:bg-white/10 font-medium">
                     Explore Projects
                   </Button>
                 </Link>
