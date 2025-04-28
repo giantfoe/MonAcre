@@ -24,45 +24,71 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-subtle">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-2">
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild className="lg:hidden">
-              <Button variant="ghost" size="icon" aria-label="Toggle Menu">
-                <Menu className="h-6 w-6" />
+              <Button variant="ghost" size="icon" aria-label="Toggle Menu" className="mr-2">
+                <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-[300px] sm:w-[400px]">
-              <nav className="flex flex-col gap-4">
+              <nav className="flex flex-col gap-6">
                 <Link href="/" className="text-xl font-bold" onClick={() => setIsOpen(false)}>
-                  SolFund
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-purple-700">
+                    SolFund
+                  </span>
                 </Link>
-                <Link href="/explore" className="text-lg" onClick={() => setIsOpen(false)}>
-                  Explore
-                </Link>
-                <Link href="/create-pool" className="text-lg" onClick={() => setIsOpen(false)}>
-                  Create Pool
-                </Link>
-                <Link href="/marketplace" className="text-lg" onClick={() => setIsOpen(false)}>
-                  Marketplace
-                </Link>
-                <Link href="/dashboard" className="text-lg" onClick={() => setIsOpen(false)}>
-                  Dashboard
-                </Link>
-                <Link href="/learn" className="text-lg" onClick={() => setIsOpen(false)}>
-                  Learn
-                </Link>
+                <div className="space-y-3">
+                  <Link
+                    href="/explore"
+                    className="block text-base py-2 px-3 rounded-md hover:bg-secondary transition-colors"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Explore
+                  </Link>
+                  <Link
+                    href="/create-pool"
+                    className="block text-base py-2 px-3 rounded-md hover:bg-secondary transition-colors"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Create Pool
+                  </Link>
+                  <Link
+                    href="/marketplace"
+                    className="block text-base py-2 px-3 rounded-md hover:bg-secondary transition-colors"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Marketplace
+                  </Link>
+                  <Link
+                    href="/dashboard"
+                    className="block text-base py-2 px-3 rounded-md hover:bg-secondary transition-colors"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    href="/learn"
+                    className="block text-base py-2 px-3 rounded-md hover:bg-secondary transition-colors"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Learn
+                  </Link>
+                </div>
               </nav>
             </SheetContent>
           </Sheet>
           <Link href="/" className="flex items-center space-x-2">
-            <span className="text-xl font-bold">SolFund</span>
+            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-purple-700">
+              SolFund
+            </span>
           </Link>
         </div>
 
         <NavigationMenu className="hidden lg:flex">
-          <NavigationMenuList>
+          <NavigationMenuList className="gap-1">
             <NavigationMenuItem>
               <Link href="/explore" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>Explore</NavigationMenuLink>
@@ -80,7 +106,7 @@ export default function Header() {
                   <li className="row-span-3">
                     <NavigationMenuLink asChild>
                       <a
-                        className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-green-500 to-green-700 p-6 no-underline outline-none focus:shadow-md"
+                        className="flex h-full w-full select-none flex-col justify-end rounded-md gradient-bg p-6 no-underline outline-none focus:shadow-md overflow-hidden"
                         href="/marketplace"
                       >
                         <div className="mt-4 mb-2 text-lg font-medium text-white">Marketplace</div>
@@ -115,7 +141,7 @@ export default function Header() {
           </NavigationMenuList>
         </NavigationMenu>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <ModeToggle />
           <WalletConnect />
         </div>
