@@ -14,7 +14,6 @@ import { supabase } from "@/lib/supabase"
 export const dynamic = "force-dynamic"
 
 export default function ProfilePage() {
-  // This is the CORRECT declaration (line 17)
   const [mounted, setMounted] = useState(false)
   const { user, walletUser, isLoading } = useAuth()
   const router = useRouter()
@@ -58,7 +57,7 @@ export default function ProfilePage() {
     }
   }, [user, walletUser, router, mounted])
 
-  if (!mounted) {
+  if (!mounted || isLoading) {
     return (
       <div className="container py-12 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
