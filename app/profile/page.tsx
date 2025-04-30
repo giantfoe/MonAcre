@@ -11,6 +11,9 @@ import { useToast } from "@/components/ui/use-toast"
 import { useAuth } from "@/contexts/auth-context"
 import { supabase } from "@/lib/supabase"
 
+// Add this line to force dynamic rendering
+export const dynamic = "force-dynamic"
+
 export default function ProfilePage() {
   const { user, walletUser, isLoading } = useAuth()
   const router = useRouter()

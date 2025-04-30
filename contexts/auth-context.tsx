@@ -118,6 +118,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
     }
   }
+
+  const signOut = async () => {
+    try {
+      setIsLoading(true)
+      await supabase.auth.signOut()
+      setUser(null)
+      setWalletUser(null)
+      toast.success("Signed out successfully")
+    } catch (error) {
+      toast.error("Sign out failed: " + (error as Error).message)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // Add this return statement with the context provider
+  return (
+    <AuthContext.Provider
+      value={{
+        session,
+        user,
+        walletUser,
+        isLoading,
+        signInWithWallet,
+        signOut
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
 export function useAuth() {
