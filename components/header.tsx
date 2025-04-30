@@ -17,9 +17,14 @@ import { cn } from "@/lib/utils"
 import { Menu, Zap } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import PrivyWalletConnect from "./privy-wallet-connect"
+import WalletSwitcher from "./wallet-switcher"
+import WalletLoader from './wallet-loader';
+import PrivySignupButton from './privy-signup-button';
+import { usePrivy } from '@privy-io/react-auth';
 
 export default function Header() {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
+  const { authenticated, ready } = usePrivy();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/80 backdrop-blur-md supports-[backdrop-filter]:bg-black/60">
@@ -185,7 +190,9 @@ export default function Header() {
 
         <div className="flex items-center gap-3">
           <ModeToggle />
-          <PrivyWalletConnect />
+          <WalletLoader>
+            <WalletSwitcher />
+          </WalletLoader>
         </div>
       </div>
     </header>
@@ -200,17 +207,17 @@ const ListItem = React.forwardRef<React.ElementRef<"a">, React.ComponentPropsWit
           <a
             ref={ref}
             className={cn(
-              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white",
-              className,
+              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-white/10 hover:text-white focus:bg-accent focus:text-accent-foreground",
+              className
             )}
             {...props}
           >
-            <div className="text-sm font-medium leading-none text-white">{title}</div>
+            <div className="text-sm font-medium leading-none">{title}</div>
             <p className="line-clamp-2 text-sm leading-snug text-gray-400">{children}</p>
           </a>
         </NavigationMenuLink>
       </li>
     )
-  },
+  }
 )
 ListItem.displayName = "ListItem"

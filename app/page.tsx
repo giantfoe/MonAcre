@@ -4,6 +4,9 @@ import { ArrowRight, BarChart3, Globe, Shield, Users, Zap, Layers, Cpu } from "l
 import FeaturedPools from "@/components/featured-pools"
 import HowItWorks from "@/components/how-it-works"
 import Image from "next/image"
+import PrivySignupButton from '@/components/privy-signup-button';
+import SecondComponent from '@/components/second-component';
+import ClientComponent from '@/components/client-component';
 
 export default function Home() {
   return (
@@ -351,3 +354,58 @@ export default function Home() {
     </div>
   )
 }
+
+// And at line 1338, change:
+function HomePage() {
+  return (
+    <>
+      {/* Content from first component */}
+      <div className="container mx-auto py-12">
+        <div className="flex flex-col items-center justify-center text-center">
+          <h1 className="text-4xl font-bold tracking-tight sm:text-6xl bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-indigo-400">
+            MonAcre
+          </h1>
+          <p className="mt-6 text-lg leading-8 text-gray-300 max-w-2xl">
+            Tokenize and trade real-world assets on the blockchain with transparency and security.
+          </p>
+          <div className="mt-10 flex items-center justify-center gap-x-6">
+            <PrivySignupButton 
+              className="relative overflow-hidden bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-700 hover:to-indigo-700 transition-all duration-300 font-medium"
+              size="lg"
+            />
+            <a href="/learn" className="text-sm font-semibold leading-6 text-white">
+              Learn more <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      {/* Content from second component */}
+      <div className="section-two">
+        <div className="flex flex-col items-center justify-center text-center">
+          <h1 className="text-4xl font-bold tracking-tight sm:text-6xl bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-indigo-400">
+            MonAcre
+          </h1>
+          <p className="mt-6 text-lg leading-8 text-gray-300 max-w-2xl">
+            Tokenize and trade real-world assets on the blockchain with transparency and security.
+          </p>
+          <div className="mt-10 flex items-center justify-center gap-x-6">
+            <PrivySignupButton 
+              className="relative overflow-hidden bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-700 hover:to-indigo-700 transition-all duration-300 font-medium"
+              size="lg"
+            />
+            <a href="/learn" className="text-sm font-semibold leading-6 text-white">
+              Learn more <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      {/* Use the second component */}
+      <SecondComponent />
+    </>
+  );
+}
+
+{/* Client component */}
+<ClientComponent />

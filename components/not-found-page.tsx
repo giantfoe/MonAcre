@@ -1,13 +1,16 @@
 'use client';
 
-import { Metadata } from 'next';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import AuthMessage from './auth-message';
 
-export const metadata: Metadata = {
-  title: 'Page Not Found | MonAcre',
-};
+export default function NotFoundPage() {
+  const [mounted, setMounted] = useState(false);
 
-export default function NotFound() {
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <div className="container py-12 flex flex-col items-center justify-center">
       <h1 className="text-3xl font-bold mb-4">404 - Page Not Found</h1>
@@ -18,6 +21,8 @@ export default function NotFound() {
       >
         Return Home
       </Link>
+      
+      {mounted && <AuthMessage />}
       
       <button 
         onClick={() => window.history.back()} 

@@ -14,6 +14,8 @@ import { Separator } from "@/components/ui/separator"
 import { AlertCircle, ArrowRight, HelpCircle, Upload, CheckCircle2 } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import CreatePoolForm from "./create-pool-form"
+import AuthMessage from "@/components/auth-message"
 
 export default function CreatePoolPage() {
   const [step, setStep] = useState(1)
