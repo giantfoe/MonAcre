@@ -216,4 +216,16 @@ export default function ProfilePage() {
       </Card>
     </div>
   )
+  
+  // Add a check for client-side rendering
+  const [mounted, setMounted] = useState(false)
+  
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+  
+  // Don't render anything until client-side hydration is complete
+  if (!mounted) {
+    return null // Return null during SSR to avoid hydration mismatch
+  }
 }

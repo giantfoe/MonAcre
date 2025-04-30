@@ -8,6 +8,7 @@ import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { PrivyAuthProvider } from '@/components/privy-provider'
 import { AuthProvider } from '@/contexts/auth-context'
+import './globals.css'
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -28,11 +29,24 @@ export default function RootLayout({
   children: React.ReactNode 
 }) {
   return (
-    <html lang="en">
-      <body>
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta
+          name="format-detection"
+          content="telephone=no, date=no, email=no, address=no"
+        />
+      </head>
+      <body className={inter.className}>
+        <ThemeProvider attribute="class" defaultTheme="dark">
+          <PrivyAuthProvider>
+            <AuthProvider>
+              <Header />
+              <main>{children}</main>
+              <Footer />
+              <Toaster />
+            </AuthProvider>
+          </PrivyAuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

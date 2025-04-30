@@ -30,8 +30,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [walletUser, setWalletUser] = useState<WalletUser | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [mounted, setMounted] = useState(false)
+
+  // Add this effect to handle client-side mounting
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
+    // Only run this effect on the client side
+    if (!mounted) return
+
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
@@ -49,7 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     )
 
     return () => subscription.unsubscribe()
-  }, [])
+  }, [mounted])
 
   // Fetch wallet user data when user changes
   useEffect(() => {
@@ -134,6 +143,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   // Add this return statement with the context provider
+  // Return a consistent UI for server and client
+  if (!mounted) {
+    return <>{children}</>
+  }
+
   return (
     <AuthContext.Provider
       value={{
