@@ -1,14 +1,8 @@
 import { Metadata } from 'next';
-import dynamic from 'next/dynamic';
-
-// Load client component without SSR
-const NotFoundClient = dynamic(
-  () => import('@/components/not-found-client'),
-  { ssr: false }
-);
+import NotFoundClient from '@/components/not-found-client';
 
 export const metadata: Metadata = {
-  title: 'Page Not Found',
+  title: 'Page Not Found | SolFund',
 };
 
 export default function NotFound() {
