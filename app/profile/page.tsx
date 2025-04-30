@@ -167,86 +167,66 @@ export default function ProfilePage() {
   }
   
   return (
-    <div className="container max-w-2xl py-12">
-      <Card>
-        <CardHeader>
-          <CardTitle>Complete Your Profile</CardTitle>
-          <CardDescription>
-            Provide some additional information to complete your account setup
-          </CardDescription>
-        </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
-              <Input
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Enter your full name"
-                required
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Enter your email address"
-                required
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="bio">Bio</Label>
-              <Textarea
-                id="bio"
-                name="bio"
-                value={formData.bio}
-                onChange={handleChange}
-                placeholder="Tell us a bit about yourself"
-                rows={4}
-              />
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button 
-              type="submit" 
-              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Saving..." : "Save Profile"}
-            </Button>
-          </CardFooter>
-        </form>
-      </Card>
-    </div>
-  )
-  
-  // Add a check for client-side rendering
-  // DELETE THESE LINES (duplicate declaration at line 232)
-  // const [mounted, setMounted] = useState(false)
-  // 
-  // useEffect(() => {
-  //   setMounted(true)
-  // }, [])
-  
-  // Keep this return statement as-is
-  if (!mounted) {
-    return (
-      <div className="container py-12 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+    <AuthHydrationGuard>
+      <div className="container max-w-2xl py-12">
+        <Card>
+          <CardHeader>
+            <CardTitle>Complete Your Profile</CardTitle>
+            <CardDescription>
+              Provide some additional information to complete your account setup
+            </CardDescription>
+          </CardHeader>
+          <form onSubmit={handleSubmit}>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Full Name</Label>
+                <Input
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Enter your full name"
+                  required
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="email">Email Address</Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Enter your email address"
+                  required
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="bio">Bio</Label>
+                <Textarea
+                  id="bio"
+                  name="bio"
+                  value={formData.bio}
+                  onChange={handleChange}
+                  placeholder="Tell us a bit about yourself"
+                  rows={4}
+                />
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button 
+                type="submit" 
+                className="w-full bg-gradient-to-r from-purple-600 to-indigo-600"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Saving..." : "Save Profile"}
+              </Button>
+            </CardFooter>
+          </form>
+        </Card>
       </div>
-    )
-  }
-  
-  // Don't render anything until client-side hydration is complete
-  if (!mounted) {
-    return null // Return null during SSR to avoid hydration mismatch
-  }
+    </AuthHydrationGuard>
+  )
 }

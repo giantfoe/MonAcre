@@ -8,7 +8,7 @@ import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { PrivyAuthProvider } from '@/components/privy-provider'
 import { AuthProvider } from '@/contexts/auth-context'
-import { AuthHydrationGuard } from '@/components/auth-hydration-guard'
+// Remove AuthHydrationGuard import from layout
 import './globals.css'
 
 const inter = Inter({ subsets: ["latin"] })
@@ -35,11 +35,10 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark">
           <PrivyAuthProvider>
             <AuthProvider>
-              <AuthHydrationGuard>
-                <Header />
-                <main>{children}</main>
-                <Footer />
-              </AuthHydrationGuard>
+              {/* Remove AuthHydrationGuard from layout */}
+              <Header />
+              <main>{children}</main>
+              <Footer />
               <Toaster />
             </AuthProvider>
           </PrivyAuthProvider>
