@@ -11,10 +11,11 @@ import { useToast } from "@/components/ui/use-toast"
 import { useAuth } from "@/contexts/auth-context"
 import { supabase } from "@/lib/supabase"
 
-// Add this line to force dynamic rendering
 export const dynamic = "force-dynamic"
 
 export default function ProfilePage() {
+  // This is the CORRECT declaration (line 17)
+  const [mounted, setMounted] = useState(false)
   const { user, walletUser, isLoading } = useAuth()
   const router = useRouter()
   const { toast } = useToast()
@@ -25,14 +26,18 @@ export default function ProfilePage() {
     bio: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
-  
+
   useEffect(() => {
-    // If user is already registered with profile data, redirect to dashboard
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!mounted) return
+
     if (user && walletUser && walletUser.profile_completed) {
       router.push("/dashboard")
     }
-    
-    // Pre-fill form with existing data if available
+
     if (user) {
       const fetchUserProfile = async () => {
         const { data, error } = await supabase
@@ -49,11 +54,18 @@ export default function ProfilePage() {
           })
         }
       }
-      
       fetchUserProfile()
     }
-  }, [user, walletUser, router])
-  
+  }, [user, walletUser, router, mounted])
+
+  if (!mounted) {
+    return (
+      <div className="container py-12 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+      </div>
+    )
+  }
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({
@@ -218,11 +230,21 @@ export default function ProfilePage() {
   )
   
   // Add a check for client-side rendering
-  const [mounted, setMounted] = useState(false)
+  // DELETE THESE LINES (duplicate declaration at line 232)
+  // const [mounted, setMounted] = useState(false)
+  // 
+  // useEffect(() => {
+  //   setMounted(true)
+  // }, [])
   
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  // Keep this return statement as-is
+  if (!mounted) {
+    return (
+      <div className="container py-12 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+      </div>
+    )
+  }
   
   // Don't render anything until client-side hydration is complete
   if (!mounted) {
