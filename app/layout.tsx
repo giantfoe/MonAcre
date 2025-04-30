@@ -6,30 +6,41 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
+import { PrivyAuthProvider } from '@/components/privy-provider'
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "SolFund | Fractional Asset Ownership on Solana",
   description: "Democratizing access to income-generating assets in emerging markets through blockchain technology",
-    generator: 'v0.dev'
+  generator: 'v0.dev',
+  icons: {
+    icon: "/images/monacre logo.png",
+    shortcut: "/images/monacre logo.png",
+    apple: "/images/monacre logo.png",
+  },
 }
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode
-}>) {
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <div className="flex min-h-screen flex-col">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <PrivyAuthProvider>
             <Header />
-            <main className="flex-1 w-full">{children}</main>
+            <main>{children}</main>
             <Footer />
-          </div>
-          <Toaster />
+            <Toaster />
+          </PrivyAuthProvider>
         </ThemeProvider>
       </body>
     </html>

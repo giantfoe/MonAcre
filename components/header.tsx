@@ -1,11 +1,9 @@
 "use client"
 
-import React from "react"
-
-import { useState } from "react"
+import React, { useState } from "react"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
 import { ModeToggle } from "./mode-toggle"
+import { Button } from "@/components/ui/button"
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -18,7 +16,7 @@ import {
 import { cn } from "@/lib/utils"
 import { Menu, Zap } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import WalletConnect from "./wallet-connect"
+import PrivyWalletConnect from "./privy-wallet-connect"
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false)
@@ -43,7 +41,7 @@ export default function Header() {
                 <Link href="/" className="text-xl font-bold flex items-center" onClick={() => setIsOpen(false)}>
                   <Zap className="h-5 w-5 mr-2 text-purple-400" />
                   <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-indigo-400">
-                    SolFund
+                    MonAcre
                   </span>
                 </Link>
                 <div className="space-y-3">
@@ -88,9 +86,13 @@ export default function Header() {
           </Sheet>
           <Link href="/" className="flex items-center space-x-2">
             <span className="text-xl font-bold flex items-center">
-              <Zap className="h-5 w-5 mr-2 text-purple-400" />
+              <img 
+                src="/images/monacre logo.png" 
+                alt="MonAcre Logo"
+                className="h-8 w-8 mr-2"
+              />
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-indigo-400">
-                SolFund
+                MonAcre
               </span>
             </span>
           </Link>
@@ -183,7 +185,7 @@ export default function Header() {
 
         <div className="flex items-center gap-3">
           <ModeToggle />
-          <WalletConnect />
+          <PrivyWalletConnect />
         </div>
       </div>
     </header>

@@ -7,10 +7,8 @@ import Link from "next/link"
 export default function LearnPage() {
   const guides = [
     {
-      title: "Getting Started with SolFund",
+      title: "Getting Started with MonAcre",
       description: "Learn the basics of how to use the platform to create and invest in pools.",
-      icon: <BookOpen className="h-6 w-6" />,
-      link: "/learn/getting-started",
     },
     {
       title: "Understanding Fractional Ownership",
@@ -34,9 +32,8 @@ export default function LearnPage() {
 
   const faqs = [
     {
-      question: "How does SolFund ensure the security of my investment?",
-      answer:
-        "SolFund uses multi-signature wallets, smart contract audits, and cold wallet storage for funds. All transactions are recorded on the Solana blockchain for transparency and security.",
+      question: "How does MonAcre ensure the security of my investment?",
+      answer: "MonAcre uses multi-signature wallets...",
     },
     {
       question: "What happens if a pool doesn't reach its funding goal?",
@@ -91,7 +88,8 @@ export default function LearnPage() {
                   <CardDescription className="text-base">{guide.description}</CardDescription>
                 </CardContent>
                 <CardFooter>
-                  <Link href={guide.link}>
+                  // Ensure href is always string
+                  <Link href={guide.link ?? ''}>
                     <Button variant="outline">
                       Read Guide <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>

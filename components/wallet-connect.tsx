@@ -11,25 +11,69 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Wallet, Zap } from "lucide-react"
+import { useAuth } from "@/contexts/auth-context"
+import { useToast } from "@/hooks/use-toast"
 
 export default function WalletConnect() {
-  const [isConnected, setIsConnected] = useState(false)
+  const { user, walletUser, isLoading, signInWithWallet, signOut } = useAuth()
+  const { toast } = useToast()
+  const [isOpen, setIsOpen] = useState(false)
+  
+  const isConnected = !!user && !!walletUser
 
-  // This is a placeholder for actual wallet connection logic
-  const handleConnect = (walletType: string) => {
-    console.log(`Connecting to ${walletType} wallet...`)
-    // In a real implementation, this would connect to the Solana wallet
-    setIsConnected(true)
+  // Handle wallet connection
+  // Remove Ethereum mock address generation
+  const handleConnect = async (walletType: string) => {
+    try {
+      if (!window.solana || !window.solana.isPhantom) {
+        throw new Error("Solana wallet not detected");
+      }
+      
+      const publicKey = await window.solana.connect();
+      await signInWithWallet(publicKey.toString());
+      
+      toast({
+        title: "Solana Wallet Connected",
+        description: `Successfully connected ${walletType} wallet`,
+      });
+      
+      setIsOpen(false);
+    } catch (error) {
+      console.error("Error connecting wallet:", error);
+      toast({
+        title: "Connection Failed",
+        description: "Failed to connect Solana wallet",
+        variant: "destructive",
+      });
+    }
   }
 
-  const handleDisconnect = () => {
-    console.log("Disconnecting wallet...")
-    // In a real implementation, this would disconnect the wallet
-    setIsConnected(false)
+  const handleDisconnect = async () => {
+    try {
+      await signOut()
+      toast({
+        title: "Wallet Disconnected",
+        description: "Your wallet has been disconnected.",
+      })
+      setIsOpen(false)
+    } catch (error) {
+      console.error("Error disconnecting wallet:", error)
+      toast({
+        title: "Disconnection Failed",
+        description: "Failed to disconnect wallet. Please try again.",
+        variant: "destructive",
+      })
+    }
+  }
+
+  // Format wallet address for display
+  const formatWalletAddress = (address: string) => {
+    if (!address) return ""
+    return `${address.slice(0, 6)}...${address.slice(-4)}`
   }
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
           variant="outline"
@@ -39,7 +83,7 @@ export default function WalletConnect() {
           {isConnected ? (
             <span className="flex items-center relative z-10">
               <span className="mr-2 h-2 w-2 rounded-full bg-green-500"></span>
-              0x1a2...3b4c
+              {formatWalletAddress(walletUser?.wallet_address || "")}
             </span>
           ) : (
             <span className="flex items-center relative z-10">
@@ -54,22 +98,33 @@ export default function WalletConnect() {
           <DialogTitle>{isConnected ? "Wallet Connected" : "Connect Wallet"}</DialogTitle>
           <DialogDescription className="text-gray-400">
             {isConnected
-              ? "Your wallet is connected to SolFund."
+              ? "Your wallet is connected to MonAcre."
               : "Connect your Solana wallet to create pools, invest, and manage your assets."}
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-4 py-4">
-          {isConnected ? (
+          {isLoading ? (
+            <div className="flex justify-center py-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
+            </div>
+          ) : isConnected ? (
             <div className="flex flex-col gap-4">
               <div className="flex items-center justify-between rounded-lg border border-white/10 p-4 bg-black/30">
                 <div>
                   <p className="font-medium text-white">Wallet Address</p>
-                  <p className="text-sm text-gray-400 mt-1 font-mono">0x1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t</p>
+                  <p className="text-sm text-gray-400 mt-1 font-mono">{walletUser?.wallet_address}</p>
                 </div>
                 <Button
                   variant="outline"
                   size="sm"
                   className="text-purple-400 border-purple-500/30 hover:bg-purple-500/10 hover:text-purple-300"
+                  onClick={() => {
+                    navigator.clipboard.writeText(walletUser?.wallet_address || "")
+                    toast({
+                      title: "Copied",
+                      description: "Wallet address copied to clipboard",
+                    })
+                  }}
                 >
                   Copy
                 </Button>
@@ -102,6 +157,8 @@ export default function WalletConnect() {
                 </span>
                 <span className="text-xs text-purple-400 relative z-10">Popular</span>
               </Button>
+              
+              {/* ... existing code for other wallet options ... */}
               <Button
                 className="flex items-center justify-between relative overflow-hidden transition-all duration-300 bg-black/50 hover:bg-black/70 text-white border border-white/10 h-14 group"
                 onClick={() => handleConnect("Solflare")}

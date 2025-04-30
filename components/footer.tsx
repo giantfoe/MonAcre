@@ -12,7 +12,7 @@ export default function Footer() {
             <h3 className="text-xl font-bold flex items-center">
               <Zap className="h-5 w-5 mr-2 text-purple-400" />
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-indigo-400">
-                SolFund
+                MonAcre
               </span>
             </h3>
             <p className="max-w-xs text-gray-300">
@@ -135,6 +135,11 @@ export default function Footer() {
               <Link href="/cookies" className="hover:text-purple-400 transition-colors">
                 Cookies Policy
               </Link>
+              <img 
+                src="/images/monacre logo.png" 
+                alt="MonAcre Logo"
+                className="h-6 w-6 mr-2"
+              />
             </div>
           </div>
         </div>
