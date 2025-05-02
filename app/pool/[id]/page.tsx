@@ -36,7 +36,12 @@ import {
 } from "@/components/ui/dialog"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
-export default function PoolDetailPage({ params }: { params: { id: string } }) {
+interface PageProps {
+  params: { id: string }
+  searchParams?: { [key: string]: string | string[] | undefined }
+}
+
+export default function PoolDetailPage({ params }: PageProps) {
   const [investAmount, setInvestAmount] = useState("")
 
   // Mock data for the pool
@@ -488,4 +493,8 @@ export default function PoolDetailPage({ params }: { params: { id: string } }) {
       </div>
     </div>
   )
+}
+
+export async function generateStaticParams() {
+  return [{ id: '1' }, { id: '2' }] // Example static paths
 }
