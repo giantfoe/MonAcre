@@ -88,7 +88,7 @@ export default function WalletConnect() {
           ) : (
             <span className="flex items-center relative z-10">
               <Wallet className="mr-2 h-4 w-4" />
-              Connect Wallet
+              Signup/Sign-in
             </span>
           )}
         </Button>

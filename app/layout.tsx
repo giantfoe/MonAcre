@@ -19,18 +19,14 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <PrivyAuthProvider>
-          <GlobalProviders>
-            <ThemeProvider attribute="class" defaultTheme="dark">
-              <Header />
-              {children}
-              <Footer />
-              <Toaster />
-            </ThemeProvider>
-          </GlobalProviders>
-        </PrivyAuthProvider>
+    <html lang="en" suppressHydrationWarning className="dark">
+      <body className={`${inter.className} bg-background text-foreground`}>
+        <GlobalProviders>
+          <PrivyAuthProvider>
+            <Header />
+            {children}
+          </PrivyAuthProvider>
+        </GlobalProviders>
       </body>
     </html>
   )

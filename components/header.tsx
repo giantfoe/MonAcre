@@ -33,15 +33,15 @@ export default function Header() {
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild className="lg:hidden">
               <Button
-                variant="ghost"
+                variant="outline"
                 size="icon"
                 aria-label="Toggle Menu"
-                className="mr-2 text-white hover:bg-white/10"
+                className="mr-2 text-white border-white/20 hover:bg-white/10"
               >
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-[300px] sm:w-[400px] bg-gray-900 border-white/10 text-white">
+            <SheetContent className="w-[300px] sm:w-[400px] bg-gray-900 border-white/10 text-white">
               <nav className="flex flex-col gap-6">
                 <Link href="/" className="text-xl font-bold flex items-center" onClick={() => setIsOpen(false)}>
                   <Zap className="h-5 w-5 mr-2 text-purple-400" />
@@ -189,9 +189,15 @@ export default function Header() {
         </NavigationMenu>
 
         <div className="flex items-center gap-3">
-          <ModeToggle />
+          {/* <ModeToggle /> Remove this line */}
           <WalletLoader>
-            <WalletSwitcher />
+            {!authenticated && ready ? (
+              <PrivySignupButton 
+                className="relative overflow-hidden border-white/20 text-white hover:bg-white/10 transition-all duration-300 font-medium backdrop-blur-sm"
+              />
+            ) : (
+              <WalletSwitcher />
+            )}
           </WalletLoader>
         </div>
       </div>

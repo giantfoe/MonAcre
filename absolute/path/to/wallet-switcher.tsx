@@ -12,10 +12,6 @@ import {
 import { ChevronDown, Wallet } from 'lucide-react';
 import { useWallet } from '@/hooks/use-wallet';
 
-// Add at the top with other imports
-import { PublicKey } from '@solana/web3.js'
-import { registerWalletWithReown } from '@/lib/reown-integration';
-
 interface WalletSwitcherProps {
   className?: string;
   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
@@ -23,7 +19,10 @@ interface WalletSwitcherProps {
 }
 
 const WalletSwitcher: React.FC<WalletSwitcherProps> = ({ 
-  }) => {
+  className = '',
+  variant = 'outline',
+  size = 'default'
+}) => {
   // Remove duplicate wallet state management
   const { activeWallet, setActiveWallet, authenticated } = useWallet();
   const { user, login } = usePrivy();
@@ -31,36 +30,8 @@ const WalletSwitcher: React.FC<WalletSwitcherProps> = ({
 
   const formattedAddress = useMemo(() => {
     if (!user?.wallet?.address) return "";
-    
-    if (authenticated && user.wallet.address) {
-      fetch('/api/register-wallet', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          address: user.wallet.address,
-          chain: activeWallet,
-          metadata: {
-            userId: user.id,
-            walletType: 'privy-embedded'
-          }
-        })
-      }).catch(console.error);
-    }
-
-    if (activeWallet === 'solana') {
-      try {
-        const pubkey = new PublicKey(user.wallet.address);
-        return `${pubkey.toBase58().slice(0, 4)}...${pubkey.toBase58().slice(-4)}`;
-      } catch {
-        return "Invalid Address";
-      }
-    }
-    
-    // Default to Ethereum formatting
     return `${user.wallet.address.slice(0, 6)}...${user.wallet.address.slice(-4)}`;
-  }, [user, activeWallet, authenticated]);
+  }, [user]);
 
   // Remove duplicate address formatting logic (already handled in useWallet hook)
   return (
