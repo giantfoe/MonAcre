@@ -86,4 +86,17 @@
     "tailwindcss": "^3.4.17",
     "typescript": "^5"
   }
-}
+  ,
+    "engines": {
+      "node": ">=20.0.0",
+      "pnpm": "8.0.0"
+
+      },
+      "os": ["darwin", "linux"],
+      "cpu": ["x64", "arm64"],
+    
+    "additionalScripts": {
+      "preinstall": "npx only-allow pnpm"
+    }
+  }
+
