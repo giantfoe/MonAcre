@@ -4,8 +4,8 @@
 import { Metadata } from 'next'
 import PoolDetailClient from './pool-detail-client'
 
-// Update the interface to match Next.js App Router expectations
-export interface PageProps {
+// Define the params type correctly for Next.js App Router
+type PageProps = {
   params: { id: string }
   searchParams?: { [key: string]: string | string[] | undefined }
 }
