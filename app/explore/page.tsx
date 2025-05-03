@@ -30,7 +30,7 @@ export default function ExplorePage() {
       description:
         "Fund a fleet of 5 taxis operating in Freetown, Sierra Leone. Monthly profits distributed to all investors.",
       creator: "Ibrahim Kamara",
-      creatorAvatar: "/placeholder.svg?height=40&width=40",
+      creatorAvatar: "/images/sierra-leone-coast.jpeg", // Updated
       target: 12000,
       raised: 9600,
       investors: 48,
@@ -45,7 +45,7 @@ export default function ExplorePage() {
       description:
         "Invest in 10 market stalls in Bo City's central market. Steady income from rent and profit sharing.",
       creator: "Aminata Sesay",
-      creatorAvatar: "/placeholder.svg?height=40&width=40",
+      creatorAvatar: "/images/sierra-leone-coast.jpeg", // Updated
       target: 8000,
       raised: 7200,
       investors: 36,
@@ -390,3 +390,9 @@ export default function ExplorePage() {
     </div>
   )
 }
+
+<img
+  src="/images/sierra-leone-coast.jpeg"
+  alt="Project visual"
+  className="w-full h-full object-cover rounded-lg"
+/>
