@@ -2,9 +2,10 @@
 // Import necessary components
 
 import { Metadata } from 'next'
-import PoolDetailClient from './pool-detail-client.tsx'
+import PoolDetailClient from './pool-detail-client'
 
-interface PageProps {
+// Update the interface to match Next.js App Router expectations
+export interface PageProps {
   params: { id: string }
   searchParams?: { [key: string]: string | string[] | undefined }
 }
