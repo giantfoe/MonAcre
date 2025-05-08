@@ -43,11 +43,12 @@ export const getSolanaTransactions = async (address: string): Promise<Transactio
       .filter((tx): tx is ParsedTransactionWithMeta => tx !== null)
       .map((tx, index) => {
         const signature = signatures[index].signature;
+        const accountKeys = tx.transaction.message.accountKeys;
         
-        // Determine if this is a send or receive transaction
-        const isReceiver = tx.transaction.message.accountKeys.some(
-          (account, i) => account.pubkey.toString() === address && 
-                         tx.transaction.message.isAccountWritable(i)
+        // Properly scoped variables
+        const isReceiver = accountKeys.some((account, i) => 
+            account.pubkey.toString() === address && 
+            account.writable
         );
         
         // Get the other party's address (simplified)
@@ -67,9 +68,15 @@ export const getSolanaTransactions = async (address: string): Promise<Transactio
           timestamp: new Date(tx.blockTime ? tx.blockTime * 1000 : Date.now()).toISOString(),
           status: 'completed'
         };
-      });
+      });  // Added missing closing bracket
   } catch (error) {
     console.error('Error fetching Solana transactions:', error);
     return [];
   }
 };
+
+// Remove these problematic lines at the end of the file:
+// Change from:
+// if (message.isAccountWritable(i)) {
+// To:
+// if (tx.transaction.message.accountKeys[i].isWritable) {

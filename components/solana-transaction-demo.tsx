@@ -72,7 +72,7 @@ export default function SolanaTransactionDemo() {
         <Button 
           onClick={handleSendTransaction} 
           disabled={!isReady || isProcessing || !recipientAddress || parseFloat(amount) <= 0}
-          className="w-full"
+          className="w-full gap-2 bg-black hover:bg-gray-800 text-white border border-gray-700" // Applied Connect Wallet style
         >
           {isProcessing ? "Processing..." : "Send SOL"}
         </Button>

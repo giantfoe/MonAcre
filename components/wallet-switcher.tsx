@@ -1,20 +1,8 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { usePrivy } from '@privy-io/react-auth';
+import { useRouter } from 'next/navigation'; // Import useRouter
 import { Button } from '@/components/ui/button';
-import { 
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger 
-} from '@/components/ui/dropdown-menu';
-import { ChevronDown, Wallet } from 'lucide-react';
-import { useWallet } from '@/hooks/use-wallet';
-
-// Add at the top with other imports
-import { PublicKey } from '@solana/web3.js'
-import { registerWalletWithReown } from '@/lib/reown-integration';
+import { Wallet } from 'lucide-react';
 
 interface WalletSwitcherProps {
   className?: string;
@@ -23,101 +11,29 @@ interface WalletSwitcherProps {
 }
 
 const WalletSwitcher: React.FC<WalletSwitcherProps> = ({ 
-  }) => {
-  // Remove duplicate wallet state management
-  const { activeWallet, setActiveWallet, authenticated } = useWallet();
-  const { user, login } = usePrivy();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  className,
+  variant = "outline", // Default variant
+  size = "default" // Default size
+}) => {
+  const router = useRouter(); // Initialize useRouter
 
-  const formattedAddress = useMemo(() => {
-    if (!user?.wallet?.address) return "";
-    
-    if (authenticated && user.wallet.address) {
-      fetch('/api/register-wallet', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          address: user.wallet.address,
-          chain: activeWallet,
-          metadata: {
-            userId: user.id,
-            walletType: 'privy-embedded'
-          }
-        })
-      }).catch(console.error);
-    }
+  const handleNavigateToWallets = () => {
+    router.push('/wallets');
+  };
 
-    if (activeWallet === 'solana') {
-      try {
-        const pubkey = new PublicKey(user.wallet.address);
-        return `${pubkey.toBase58().slice(0, 4)}...${pubkey.toBase58().slice(-4)}`;
-      } catch {
-        return "Invalid Address";
-      }
-    }
-    
-    // Default to Ethereum formatting
-    return `${user.wallet.address.slice(0, 6)}...${user.wallet.address.slice(-4)}`;
-  }, [user, activeWallet, authenticated]);
-
-  // Remove duplicate address formatting logic (already handled in useWallet hook)
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          className="relative overflow-hidden border-white/20 text-white hover:bg-white/10 transition-all duration-300 font-medium backdrop-blur-sm"
-        >
-          <span className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-indigo-500/20 to-blue-500/20 opacity-0 hover:opacity-100 transition-opacity duration-300" />
-          <span className="flex items-center relative z-10">
-            <Wallet className="mr-2 h-4 w-4" />
-            {authenticated ? (
-              <>
-                <span className={`mr-2 h-2 w-2 rounded-full ${
-                  activeWallet === 'solana' ? 'bg-green-500' : 'bg-blue-500'
-                }`} />
-                <span className="cursor-pointer">
-                  {formattedAddress}
-                </span>
-              </>
-            ) : (
-              "Signup/Sign-in"
-            )}
-            <ChevronDown className="ml-2 h-4 w-4" />
-          </span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="bg-gray-900 border-white/10 text-white">
-        <DropdownMenuItem 
-          onClick={() => setActiveWallet('ethereum')} 
-          className={activeWallet === 'ethereum' ? 'bg-white/10' : ''}
-        >
-          {activeWallet === 'ethereum' && '✓ '}Ethereum
-        </DropdownMenuItem>
-        <DropdownMenuItem 
-          onClick={() => setActiveWallet('solana')} 
-          className={activeWallet === 'solana' ? 'bg-white/10' : ''}
-        >
-          {activeWallet === 'solana' && '✓ '}Solana
-        </DropdownMenuItem>
-        <div className="border-t border-white/10 my-1" />
-        <DropdownMenuItem
-          onClick={authenticated ? () => window.location.href = '/wallets' : login}
-          className="hover:bg-white/10"
-        >
-          {authenticated ? (
-            <div className="flex items-center gap-2">
-              <Wallet className="h-4 w-4" />
-              Manage Wallets
-            </div>
-          ) : (
-            "Connect Wallet"
-          )}
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Button
+      variant={variant}
+      size={size}
+      className={`bg-black text-white hover:bg-black/90 transition-all duration-300 font-medium ${className}`}
+      onClick={handleNavigateToWallets} // Add onClick handler
+    >
+      {/* Remove gradient span */}
+      <span className="flex items-center relative z-10">
+        <Wallet className="mr-2 h-4 w-4" />
+        Wallet
+      </span>
+    </Button>
   );
 }
 

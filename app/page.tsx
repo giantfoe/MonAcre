@@ -1,3 +1,6 @@
+"use client"; // Ensure this is at the top if not already
+
+import React, { useEffect } from 'react'; // Added useEffect
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { ArrowRight, BarChart3, Globe, Shield, Users, Zap, Layers, Cpu } from "lucide-react"
@@ -7,8 +10,75 @@ import Image from "next/image"
 import PrivySignupButton from '@/components/privy-signup-button';
 import SecondComponent from '@/components/second-component';
 import ClientComponent from '@/components/client-component';
+import { waapi, stagger, eases } from 'animejs'; // Updated import for waapi, stagger, and eases
 
 export default function Home() {
+  useEffect(() => {
+    try {
+      if (typeof waapi.animate === 'function') {
+        // Animate heading
+        waapi.animate('.hero-heading-animate', {
+          translateY: [20, 0],
+          opacity: [0, 1],
+          duration: 1000,
+          delay: stagger(100, { start: 300 }),
+          easing: eases.outExpo // Using eases object
+        });
+
+        // Animate paragraph
+        waapi.animate('.hero-paragraph-animate', {
+          translateY: [20, 0],
+          opacity: [0, 1],
+          duration: 1000,
+          delay: 800, // Start after heading animation
+                   easing: eases.outExpo // Using eases object
+        });
+
+        // Animate buttons
+        waapi.animate('.hero-buttons-animate .hero-button', {
+          translateY: [20, 0],
+          opacity: [0, 1],
+          duration: 800,
+          delay: stagger(200, { start: 1200 }),
+                   easing: eases.outExpo // Using eases object
+        });
+
+        // Animate futuristic lines
+        waapi.animate('.futuristic-line', {
+          scaleX: [0, 1],
+          opacity: [0, 1],
+          transformOrigin: 'left center',
+          duration: 1000,
+          delay: stagger(100, { start: 2000 }), // Start after hero text/buttons
+          easing: eases.inOutExpo // Changed to use eases.inOutExpo
+        });
+
+        // Animate feature cards
+        waapi.animate('.feature-card-animate', {
+          translateY: [30, 0],
+          opacity: [0, 1],
+          duration: 800,
+          delay: stagger(150, { start: 2500 }), // Start after futuristic lines
+          easing: eases.outCubic // Changed to use eases.outCubic
+        });
+
+        // Animate stats items
+        waapi.animate('.stat-item-animate', {
+          scale: [0.8, 1],
+          opacity: [0, 1],
+          duration: 700,
+          delay: stagger(100, { start: 3000 }), // Start after feature cards
+          easing: eases.outBack as any // Changed to use eases.outBack
+        });
+
+      } else {
+        console.error('Failed to initialize animejs waapi. `waapi.animate` is not a function.');
+      }
+    } catch (error) {
+      console.error('Error using animejs waapi:', error);
+    }
+  }, []);
+
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -47,25 +117,25 @@ export default function Home() {
           <div className="grid gap-8 lg:grid-cols-2 lg:gap-12 items-center">
             <div className="flex flex-col justify-center space-y-6">
               <div className="space-y-4">
-                <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-sm mb-2">
+                <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-sm mb-2 hero-heading-animate">
                   <Zap className="h-3.5 w-3.5 mr-1.5 text-purple-400" />
                   <span>Blockchain-Powered Investment Platform</span>
                 </div>
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl text-white leading-tight">
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl text-white leading-tight hero-heading-animate">
                   <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-white">
                     Democratizing Access to Income-Generating Assets
                   </span>
                 </h1>
-                <p className="max-w-[600px] text-white/90 text-lg md:text-xl leading-relaxed">
+                <p className="max-w-[600px] text-white/90 text-lg md:text-xl leading-relaxed hero-paragraph-animate">
                   Enable fractional ownership of assets in emerging markets through blockchain technology. Pool
                   resources, share profits, and make decisions together.
                 </p>
               </div>
-              <div className="flex flex-col gap-3 min-[400px]:flex-row">
-                <Link href="/create-pool">
+              <div className="flex flex-col gap-3 min-[400px]:flex-row hero-buttons-animate">
+                <Link href="/create-pool" className="hero-button">
                   <Button
                     size="lg"
-                    className="relative overflow-hidden group bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white border-0 shadow-lg shadow-purple-900/30"
+                    className="relative overflow-hidden group bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white border-0 shadow-lg shadow-purple-900/30 w-full min-[400px]:w-auto"
                   >
                     <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-purple-600/40 to-indigo-600/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                     <span className="relative flex items-center">
@@ -74,11 +144,11 @@ export default function Home() {
                     </span>
                   </Button>
                 </Link>
-                <Link href="/explore">
+                <Link href="/explore" className="hero-button">
                   <Button
                     size="lg"
                     variant="outline"
-                    className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm"
+                    className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm w-full min-[400px]:w-auto"
                   >
                     Explore Projects
                   </Button>
@@ -182,25 +252,25 @@ export default function Home() {
       <section className="py-12 md:py-16 bg-gradient-to-r from-gray-900 via-gray-950 to-black text-white border-y border-white/10">
         <div className="container px-4 md:px-6">
           <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-            <div className="flex flex-col items-center justify-center space-y-2 p-6 text-center backdrop-blur-sm bg-white/5 rounded-xl border border-white/10">
+            <div className="flex flex-col items-center justify-center space-y-2 p-6 text-center backdrop-blur-sm bg-white/5 rounded-xl border border-white/10 stat-item-animate">
               <h3 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-indigo-400">
                 $2.4M+
               </h3>
               <p className="text-center text-sm font-medium text-gray-300">Total Funded</p>
             </div>
-            <div className="flex flex-col items-center justify-center space-y-2 p-6 text-center backdrop-blur-sm bg-white/5 rounded-xl border border-white/10">
+            <div className="flex flex-col items-center justify-center space-y-2 p-6 text-center backdrop-blur-sm bg-white/5 rounded-xl border border-white/10 stat-item-animate">
               <h3 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-indigo-400">
                 124+
               </h3>
               <p className="text-center text-sm font-medium text-gray-300">Projects Funded</p>
             </div>
-            <div className="flex flex-col items-center justify-center space-y-2 p-6 text-center backdrop-blur-sm bg-white/5 rounded-xl border border-white/10">
+            <div className="flex flex-col items-center justify-center space-y-2 p-6 text-center backdrop-blur-sm bg-white/5 rounded-xl border border-white/10 stat-item-animate">
               <h3 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-indigo-400">
                 5,400+
               </h3>
               <p className="text-center text-sm font-medium text-gray-300">Global Investors</p>
             </div>
-            <div className="flex flex-col items-center justify-center space-y-2 p-6 text-center backdrop-blur-sm bg-white/5 rounded-xl border border-white/10">
+            <div className="flex flex-col items-center justify-center space-y-2 p-6 text-center backdrop-blur-sm bg-white/5 rounded-xl border border-white/10 stat-item-animate">
               <h3 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-indigo-400">
                 18%
               </h3>
@@ -230,7 +300,7 @@ export default function Home() {
             </div>
           </div>
           <div className="mx-auto grid max-w-5xl grid-cols-1 gap-8 py-12 md:grid-cols-2 lg:gap-12">
-            <div className="flex flex-col items-start space-y-4 rounded-xl border border-white/10 p-6 transition-all hover:shadow-lg hover:shadow-purple-500/10 bg-white/5 backdrop-blur-sm group">
+            <div className="flex flex-col items-start space-y-4 rounded-xl border border-white/10 p-6 transition-all hover:shadow-lg hover:shadow-purple-500/10 bg-white/5 backdrop-blur-sm group feature-card-animate">
               <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-purple-600 to-indigo-600 shadow-lg shadow-purple-900/30 group-hover:shadow-purple-900/50 transition-all">
                 <Users className="h-6 w-6 text-white" />
               </div>
@@ -241,7 +311,7 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            <div className="flex flex-col items-start space-y-4 rounded-xl border border-white/10 p-6 transition-all hover:shadow-lg hover:shadow-purple-500/10 bg-white/5 backdrop-blur-sm group">
+            <div className="flex flex-col items-start space-y-4 rounded-xl border border-white/10 p-6 transition-all hover:shadow-lg hover:shadow-purple-500/10 bg-white/5 backdrop-blur-sm group feature-card-animate">
               <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-purple-600 to-indigo-600 shadow-lg shadow-purple-900/30 group-hover:shadow-purple-900/50 transition-all">
                 <BarChart3 className="h-6 w-6 text-white" />
               </div>
@@ -252,7 +322,7 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            <div className="flex flex-col items-start space-y-4 rounded-xl border border-white/10 p-6 transition-all hover:shadow-lg hover:shadow-purple-500/10 bg-white/5 backdrop-blur-sm group">
+            <div className="flex flex-col items-start space-y-4 rounded-xl border border-white/10 p-6 transition-all hover:shadow-lg hover:shadow-purple-500/10 bg-white/5 backdrop-blur-sm group feature-card-animate">
               <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-purple-600 to-indigo-600 shadow-lg shadow-purple-900/30 group-hover:shadow-purple-900/50 transition-all">
                 <Globe className="h-6 w-6 text-white" />
               </div>
@@ -263,7 +333,7 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            <div className="flex flex-col items-start space-y-4 rounded-xl border border-white/10 p-6 transition-all hover:shadow-lg hover:shadow-purple-500/10 bg-white/5 backdrop-blur-sm group">
+            <div className="flex flex-col items-start space-y-4 rounded-xl border border-white/10 p-6 transition-all hover:shadow-lg hover:shadow-purple-500/10 bg-white/5 backdrop-blur-sm group feature-card-animate">
               <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-purple-600 to-indigo-600 shadow-lg shadow-purple-900/30 group-hover:shadow-purple-900/50 transition-all">
                 <Shield className="h-6 w-6 text-white" />
               </div>

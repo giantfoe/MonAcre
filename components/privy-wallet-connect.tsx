@@ -49,8 +49,7 @@ export default function PrivyWalletConnect() {
   if (!ready) {
     return (
       <Button
-        variant="outline"
-        className="relative overflow-hidden border-white/20 text-white hover:bg-white/10 transition-all duration-300 font-medium backdrop-blur-sm"
+        className="gap-2 bg-black hover:bg-gray-800 text-white border border-gray-700 relative overflow-hidden backdrop-blur-sm" // Applied Connect Wallet style
         disabled
       >
         <span className="flex items-center relative z-10">
@@ -63,8 +62,7 @@ export default function PrivyWalletConnect() {
 
   return (
     <Button
-      variant="outline"
-      className="relative overflow-hidden border-white/20 text-white hover:bg-white/10 transition-all duration-300 font-medium backdrop-blur-sm"
+      className="gap-2 bg-black hover:bg-gray-800 text-white border border-gray-700 relative overflow-hidden backdrop-blur-sm" // Applied Connect Wallet style
       onClick={authenticated ? handleLogout : handleLogin}
     >
       <span className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-indigo-500/20 to-blue-500/20 opacity-0 hover:opacity-100 transition-opacity duration-300"></span>

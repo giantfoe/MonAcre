@@ -1,33 +1,28 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
-import { Toaster } from "@/components/ui/toaster"
-import Header from "@/components/header"
-import Footer from "@/components/footer"
-import { PrivyAuthProvider } from "@/components/privy-provider"
-import { AuthProvider } from '@/contexts/auth-context'
-import { GlobalProviders } from '@/components/providers';
+// 'use client'; // Keep this if your simplified layout still needs client context, otherwise remove.
+import './globals.css'; // Assuming this is essential and SSR-safe
+import { Inter } from 'next/font/google';
+import Header from '@/components/header';
+import { WalletProviders } from './providers'; // Import WalletProviders
 
-// Initialize the Inter font
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'] });
+
+export const metadata = {
+  title: 'MonAcre App', // Basic metadata
+  description: 'Simplified layout test',
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className="dark">
-      <body className={`${inter.className} bg-background text-foreground`}>
-        <GlobalProviders>
-          <PrivyAuthProvider>
-            <Header />
-            {children}
-          </PrivyAuthProvider>
-        </GlobalProviders>
+    <html lang="en" suppressHydrationWarning={true}><body className={inter.className}>
+        <WalletProviders> {/* Wrap Header and children with WalletProviders */}
+          <Header />
+          {children}
+        </WalletProviders>
       </body>
     </html>
-  )
+  );
 }

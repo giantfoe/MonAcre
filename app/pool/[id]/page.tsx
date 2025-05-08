@@ -5,12 +5,14 @@ import { Metadata } from 'next'
 import PoolDetailClient from './pool-detail-client'
 
 // Define the params type correctly for Next.js App Router
-type PageProps = {
-  params: { id: string }
-  searchParams?: { [key: string]: string | string[] | undefined }
+interface PageProps {
+  params: {
+    id: string
+  }
 }
 
-export default function PoolDetailPage({ params }: PageProps) {
+// Update the component to use the correct props typing
+export default function PoolPage({ params }: { params: { id: string } }) {
   // Fetch any server-side data here if needed
   
   // Pass the data to a client component

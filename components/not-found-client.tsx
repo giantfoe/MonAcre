@@ -11,7 +11,7 @@ export default function NotFoundClient() {
       {user && <p className="text-lg">Welcome back! This page doesn't exist.</p>}
       <button 
         onClick={() => window.history.back()} 
-        className="mt-6 px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-md text-white"
+        className="mt-6 px-4 py-2 gap-2 bg-black hover:bg-gray-800 text-white border border-gray-700 rounded-md" // Applied Connect Wallet style and kept rounded-md
       >
         Go Back
       </button>

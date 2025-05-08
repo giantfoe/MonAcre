@@ -172,7 +172,7 @@ export default function FeaturedPools() {
                 <Link href={`/pool/${pool.id}`}>
                   <Button
                     size="sm"
-                    className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white border-0 relative overflow-hidden group"
+                    className="gap-2 bg-black hover:bg-gray-800 text-white border border-gray-700 relative overflow-hidden group" // Applied Connect Wallet style
                   >
                     <span className="absolute inset-0 w-full h-full bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                     <span className="relative flex items-center">
@@ -188,9 +188,8 @@ export default function FeaturedPools() {
         <div className="flex justify-center pt-8">
           <Link href="/explore">
             <Button
-              variant="outline"
               size="lg"
-              className="relative overflow-hidden group border-white/20 text-white hover:bg-white/5 backdrop-blur-sm"
+              className="gap-2 bg-black hover:bg-gray-800 text-white border border-gray-700 relative overflow-hidden group backdrop-blur-sm" // Applied Connect Wallet style, kept backdrop-blur-sm
             >
               <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-purple-600/20 to-indigo-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
               <span className="relative z-10 flex items-center font-medium">

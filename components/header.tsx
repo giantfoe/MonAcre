@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react" // Added useEffect here
 import Link from "next/link"
 import { ModeToggle } from "./mode-toggle"
 import { Button } from "@/components/ui/button"
@@ -21,10 +21,32 @@ import WalletSwitcher from "./wallet-switcher"
 import WalletLoader from './wallet-loader';
 import PrivySignupButton from './privy-signup-button';
 import { usePrivy } from '@privy-io/react-auth';
+import { waapi, eases } from 'animejs'; // Updated import for waapi and eases
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const { authenticated, ready } = usePrivy();
+
+  useEffect(() => {
+    // No need for async loadAnimation if waapi is imported directly
+    // and assuming it doesn't need to be loaded conditionally.
+    // If it still needs to be client-side only, the dynamic import approach would be kept.
+    // For now, let's try direct import as per the user's provided snippet.
+    try {
+      if (typeof waapi.animate === 'function') {
+        waapi.animate('.monacre-logo-animate', {
+          rotate: '1turn',
+          duration: 2000,
+          loop: true,
+          easing: eases.inOutSine // Corrected typo from easeInOutSine to inOutSine
+        });
+      } else {
+        console.error('Failed to initialize animejs waapi. `waapi.animate` is not a function.');
+      }
+    } catch (error) {
+      console.error('Error using animejs waapi:', error);
+    }
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/80 backdrop-blur-md supports-[backdrop-filter]:bg-black/60">
@@ -94,7 +116,7 @@ export default function Header() {
               <img 
                 src="/images/monacre logo.png" 
                 alt="MonAcre Logo"
-                className="h-8 w-8 mr-2"
+                className="h-8 w-8 mr-2 monacre-logo-animate" // Added class for animation target
               />
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-indigo-400">
                 MonAcre

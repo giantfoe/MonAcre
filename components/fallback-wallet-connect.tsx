@@ -49,7 +49,7 @@ export default function FallbackWalletConnect() {
     <Button 
       onClick={handleConnect}
       disabled={connecting}
-      className="bg-gradient-to-r from-purple-600 to-indigo-600"
+      className="gap-2 bg-black hover:bg-gray-800 text-white border border-gray-700" // Applied Connect Wallet style
     >
       {connecting ? "Connecting..." : "Connect Wallet (Fallback)"}
     </Button>
