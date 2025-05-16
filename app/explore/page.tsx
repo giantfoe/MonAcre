@@ -163,7 +163,8 @@ export default function ExplorePage() {
   })
 
   return (
-    <div className="container py-12">
+    <>
+      <div className="container py-12">
       <div className="mb-8 space-y-4">
         <h1 className="text-3xl font-bold tracking-tight">Explore Investment Pools</h1>
         <p className="text-gray-500 dark:text-gray-400">
@@ -265,9 +266,13 @@ export default function ExplorePage() {
           </p>
         </div>
         <TabsContent value="grid" className="mt-6">
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="container max-w-7xl px-4 py-8">
+
+
+  <h1 className="text-3xl font-bold tracking-tight text-primary mb-8">Investment Opportunities</h1>
+  <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {filteredProjects.map((project) => (
-              <Card key={project.id} className="overflow-hidden">
+              <Card key={project.id} className="overflow-hidden bg-card/50 hover:bg-card transition-colors border-border">
                 <CardHeader className="p-0">
                   <div className="h-48 bg-gray-100 dark:bg-gray-800">
                     {/* Placeholder for project image */}
@@ -292,7 +297,7 @@ export default function ExplorePage() {
                       <span>Raised: ${project.raised.toLocaleString()}</span>
                       <span>{Math.round((project.raised / project.target) * 100)}%</span>
                     </div>
-                    <Progress value={(project.raised / project.target) * 100} className="h-2" />
+                    <Progress value={(project.raised / project.target) * 100} className="h-2 bg-muted" indicatorClassName="bg-accent" />
                     <div className="mt-1 flex items-center justify-between text-sm">
                       <span>Goal: ${project.target.toLocaleString()}</span>
                       <span className="flex items-center">
@@ -317,7 +322,7 @@ export default function ExplorePage() {
                     {project.status === "funded" ? "Fully Funded" : `${project.timeLeft} left`}
                   </span>
                   <Link href={`/pool/${project.id}`}>
-                    <Button size="sm">
+                    <Button asChild variant="default" size="default" className="w-full mt-4">
                       View Details <ArrowRight className="ml-1 h-4 w-4" />
                     </Button>
                   </Link>
@@ -354,7 +359,7 @@ export default function ExplorePage() {
                         <span>Raised: ${project.raised.toLocaleString()}</span>
                         <span>{Math.round((project.raised / project.target) * 100)}%</span>
                       </div>
-                      <Progress value={(project.raised / project.target) * 100} className="h-2" />
+                      <Progress value={(project.raised / project.target) * 100} className="h-2 bg-muted" indicatorClassName="bg-accent" />
                       <div className="mt-1 flex items-center justify-between text-sm">
                         <span>Goal: ${project.target.toLocaleString()}</span>
                         <span className="flex items-center">
@@ -382,13 +387,14 @@ export default function ExplorePage() {
                     </div>
                   </div>
                 </div>
-              </Card>
-            ))}
-          </div>
-        </TabsContent>
-      </Tabs>
-    </div>
-  )
+          </Card>
+        ))}
+      </div>
+    </TabsContent>
+  </Tabs>
+  </div> {/* Closing tag for <div className=\"container py-12\"> opened at line 167 */}
+  </>
+);
 }
 
 <img

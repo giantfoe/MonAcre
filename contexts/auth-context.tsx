@@ -206,12 +206,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  // Add this return statement with the context provider
   // Return a consistent UI for server and client
-  if (!mounted) {
-    return <>{children}</>
-  }
-
+  // The isLoading state in the context value will handle loading states for consumers.
   return (
     <AuthContext.Provider
       value={{

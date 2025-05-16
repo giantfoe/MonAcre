@@ -75,17 +75,10 @@ const WalletSwitcher: React.FC<WalletSwitcherProps> = ({
         </DropdownMenuItem>
         <div className="border-t border-white/10 my-1" />
         <DropdownMenuItem
-          onClick={authenticated ? () => window.location.href = '/wallets' : login}
+          onClick={login}
           className="hover:bg-white/10"
         >
-          {authenticated ? (
-            <div className="flex items-center gap-2">
-              <Wallet className="h-4 w-4" />
-              Manage Wallets
-            </div>
-          ) : (
-            "Connect Wallet"
-          )}
+          Connect Wallet
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

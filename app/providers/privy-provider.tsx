@@ -10,7 +10,7 @@ export default function PrivyAuthProvider({
 }) {
   return (
     <PrivyProvider
-      appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID || ''}
+      appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID?.toString() || ''}
       config={{
         loginMethods: ['email', 'wallet'],
         appearance: {

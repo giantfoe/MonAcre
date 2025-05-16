@@ -24,10 +24,15 @@ import {
 } from '@/components/ui/card'
 import { useEffect, useState } from 'react'
 import { usePrivy } from '@privy-io/react-auth'
+import { Connection, PublicKey, SystemProgram, Transaction, LAMPORTS_PER_SOL } from '@solana/web3.js'
+import { TOKEN_PROGRAM_ID, getOrCreateAssociatedTokenAccount, createTransferInstruction as createSplTransferInstruction } from '@solana/spl-token' // Renamed to avoid conflict
 import Image from 'next/image'
 import { Progress } from "@/components/ui/progress"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useToast } from "@/components/ui/use-toast"
+import { useRouter } from "next/navigation" // Added import
+import { useAuth } from "@/contexts/auth-context" // Added import
+import { supabase } from "@/lib/supabase" // Added import
 import Link from 'next/link'
 import { 
   Dialog,
@@ -37,17 +42,44 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { usePrivyAuth } from "@/hooks/use-privy-auth"
+
+export const dynamic = "force-dynamic" // Added to ensure dynamic rendering for auth state
 
 export default function WalletsPage() {
   const { publicKey, connected, disconnect, connecting, wallet, error, connect } = useWallet() // Added connect and error
   const { setVisible } = useWalletModal(); // Added useWalletModal
-  const { user, authenticated } = usePrivy()
+  const { user, authenticated, login } = usePrivy() // Added login for Privy
+  const { user: authUser, walletUser, isLoading: authIsLoading } = useAuth() // Renamed to avoid conflict, added walletUser and isLoading
+  const router = useRouter() // Added for navigation
   const { toast } = useToast()
   const [solBalance, setSolBalance] = useState<string>('0.00')
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [transactions, setTransactions] = useState([])
   const [showNewUserGuide, setShowNewUserGuide] = useState(false)
   const [stakedBalance, setStakedBalance] = useState<string>('0.00') // Added for staked balance
+
+  // Profile form state
+  const [profileFormData, setProfileFormData] = useState({
+    name: "",
+    email: "",
+    bio: "",
+  })
+  const [isProfileSubmitting, setIsProfileSubmitting] = useState(false)
+  const [profileMounted, setProfileMounted] = useState(false)
+
+  // State for receive dialog
+  const [showReceiveDialog, setShowReceiveDialog] = useState(false)
 
   // Helper function to format addresses
   const formattedAddress = (address: string) => 
@@ -93,6 +125,40 @@ export default function WalletsPage() {
     }
   }, [connected, publicKey, toast]) // Added toast to dependency array
 
+  // Effect for profile completion logic, similar to ProfilePage
+  useEffect(() => {
+    setProfileMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!profileMounted) return
+
+    // Fetch existing profile data if user is available and profile not complete
+    if (authUser && walletUser && !walletUser.profile_completed) {
+      const fetchUserProfile = async () => {
+        const { data, error } = await supabase
+          .from('user_profiles')
+          .select('*')
+          .eq('user_id', authUser.id)
+          .single()
+          
+        if (data && !error) {
+          setProfileFormData({
+            name: data.name || "",
+            email: data.email || (authUser as any).email || "", // Cast authUser to any to access email if available from Privy
+            bio: data.bio || "",
+          })
+        } else if (error && error.code !== 'PGRST116') { // PGRST116: no rows found
+          console.error("Error fetching user profile:", error)
+        }
+      }
+      fetchUserProfile()
+    } else if (authUser && walletUser && walletUser.profile_completed) {
+      // If profile is already completed, ensure form data is not stale or empty
+      // This might not be strictly necessary if the form is hidden when profile is complete
+    }
+  }, [authUser, walletUser, profileMounted, router])
+
   // Effect to handle wallet connection errors
   useEffect(() => {
     if (error) {
@@ -134,6 +200,105 @@ export default function WalletsPage() {
     }
   }
 
+  const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setProfileFormData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
+
+  const handleProfileSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    
+    if (!authUser) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to complete your profile",
+        variant: "destructive"
+      })
+      return
+    }
+    
+    setIsProfileSubmitting(true)
+    
+    try {
+      // Update user_profiles table
+      const { error: profileError } = await supabase
+        .from('user_profiles')
+        .upsert({
+          user_id: authUser.id,
+          name: profileFormData.name,
+          email: profileFormData.email,
+          bio: profileFormData.bio,
+          updated_at: new Date().toISOString()
+        })
+      
+      if (profileError) throw profileError
+      
+      // Mark profile as completed in wallet_users table
+      const { error: walletError } = await supabase
+        .from('wallet_users')
+        .update({ profile_completed: true })
+        .eq('id', authUser.id)
+      
+      if (walletError) throw walletError
+      
+      toast({
+        title: "Profile Updated",
+        description: "Your profile has been successfully updated.",
+      })
+      // Optionally, force a re-fetch or update of walletUser state if not automatically handled by useAuth
+      // router.push("/dashboard") // Or simply hide the form
+    } catch (error) {
+      console.error("Error updating profile:", error)
+      toast({
+        title: "Error Updating Profile",
+        description: (error as Error).message || "There was a problem updating your profile.",
+        variant: "destructive"
+      })
+    } finally {
+      setIsProfileSubmitting(false)
+    }
+  }
+
+  // Hooks must be called unconditionally at the top level.
+  const { login: handleLogin, isAuthenticated, user: privyUser, isLoading: privyLoading } = usePrivyAuth();
+
+  // Loading state for auth
+  if (authIsLoading || !profileMounted || privyLoading) { // Added privyLoading to the condition
+    return (
+      <div className="container py-12 flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+      </div>
+    )
+  }
+
+  // If not authenticated via Privy, show login/connect prompt
+  // This check might need refinement based on how `authUser` and `walletUser` are populated
+  if (!isAuthenticated || !authUser) {
+    return (
+      <div className="container py-12 flex flex-col items-center justify-center min-h-screen">
+        <Card className="w-full max-w-md bg-gray-900 text-white border-gray-700">
+          <CardHeader>
+            <CardTitle className="text-center">Connect Wallet & Sign In</CardTitle>
+            <CardDescription className="text-center text-gray-400">
+              Please connect your wallet and sign in to manage your account and complete your profile.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="text-center">
+            <Button 
+              onClick={handleLogin}
+              className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+            >
+              Connect Wallet & Sign In
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="container max-w-5xl py-12 bg-black text-white">
 
@@ -143,6 +308,69 @@ export default function WalletsPage() {
           Connect your wallet to manage your assets and perform transactions.
         </p>
       </div>
+
+      {/* Profile Completion Section - Show if profile is not completed */}
+      {authUser && walletUser && !walletUser.profile_completed && (
+        <Card className="mb-8 border-gray-700 bg-gray-900 text-white">
+          <CardHeader>
+            <CardTitle className="text-xl text-white">Complete Your Profile</CardTitle>
+            <CardDescription className="text-gray-400">
+              Provide some additional information to complete your account setup.
+            </CardDescription>
+          </CardHeader>
+          <form onSubmit={handleProfileSubmit}>
+            <CardContent className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="profile-name" className="font-medium text-gray-300">Full Name</Label>
+                <Input
+                  id="profile-name"
+                  name="name"
+                  value={profileFormData.name}
+                  onChange={handleProfileChange}
+                  placeholder="E.g., Ada Lovelace"
+                  required
+                  className="bg-gray-800 border-gray-700 text-white placeholder-gray-500 focus:ring-purple-500 focus:border-purple-500"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="profile-email" className="font-medium text-gray-300">Email Address</Label>
+                <Input
+                  id="profile-email"
+                  name="email"
+                  type="email"
+                  value={profileFormData.email}
+                  onChange={handleProfileChange}
+                  placeholder="E.g., ada@example.com"
+                  required
+                  className="bg-gray-800 border-gray-700 text-white placeholder-gray-500 focus:ring-purple-500 focus:border-purple-500"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="profile-bio" className="font-medium text-gray-300">Bio</Label>
+                <Textarea
+                  id="profile-bio"
+                  name="bio"
+                  value={profileFormData.bio}
+                  onChange={handleProfileChange}
+                  placeholder="Tell us a bit about yourself (optional)"
+                  rows={3}
+                  className="bg-gray-800 border-gray-700 text-white placeholder-gray-500 focus:ring-purple-500 focus:border-purple-500"
+                />
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button 
+                type="submit" 
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                disabled={isProfileSubmitting}
+              >
+                {isProfileSubmitting ? "Saving Profile..." : "Save Profile"}
+              </Button>
+            </CardFooter>
+          </form>
+        </Card>
+      )}
+
 
       <div className="grid gap-6 md:grid-cols-7">
         <div className="md:col-span-5 space-y-6">
@@ -343,22 +571,18 @@ export default function WalletsPage() {
                           </p>
                         </div>
                       </div>
-                      <div className="space-x-2">
-                        <Button 
-                          size="sm"
-                          className="gap-2 bg-black hover:bg-gray-800 text-white border border-gray-700" // Applied Connect Wallet style
-                        >
-                          <ArrowUpRight className="h-4 w-4 mr-1" />
-                          Send
-                        </Button>
-                        <Button 
-                          size="sm"
-                          className="gap-2 bg-black hover:bg-gray-800 text-white border border-gray-700" // Applied Connect Wallet style
-                        >
-                          <ArrowDownLeft className="h-4 w-4 mr-1" />
-                          Receive
-                        </Button>
-                      </div>
+                      {/* Action Buttons will be handled by the new Send/Receive sections */}
+                    </div>
+
+                    {/* Receive Section */}
+                    <div className="mt-6 pt-6 border-t border-gray-700">
+                      <Button 
+                        onClick={() => setShowReceiveDialog(true)}
+                        className="w-full gap-2 bg-black hover:bg-gray-800 text-white border border-gray-700"
+                      >
+                        <ArrowDownLeft className="h-4 w-4" />
+                        Receive Tokens / Top Up
+                      </Button>
                     </div>
                     
                     <div className="mt-4">
@@ -423,6 +647,52 @@ export default function WalletsPage() {
           </Card>
         </div>
       </div>
+
+      {/* Receive Dialog */}
+      <Dialog open={showReceiveDialog} onOpenChange={setShowReceiveDialog}>
+        <DialogContent className="sm:max-w-md bg-gray-900 text-white border-gray-700">
+          <DialogHeader>
+            <DialogTitle className="text-white">Receive Tokens</DialogTitle>
+            <DialogDescription className="text-gray-400">
+              Share your wallet address or QR code to receive tokens.
+            </DialogDescription>
+          </DialogHeader>
+          {publicKey ? (
+            <div className="py-4 space-y-4">
+              {/* <div className="flex flex-col items-center justify-center p-4 border border-gray-700 rounded-lg bg-gray-800">
+                <QRCode 
+                  value={publicKey.toString()} 
+                  size={128} 
+                  bgColor="#1f2937" // bg-gray-800
+                  fgColor="#ffffff" // text-white
+                  level="H"
+                />
+              </div> */}
+              <div className="p-3 border border-gray-700 rounded-lg bg-gray-800">
+                <p className="text-sm text-gray-400 break-all font-mono">
+                  {publicKey.toString()}
+                </p>
+              </div>
+              <Button 
+                className="w-full gap-2 bg-indigo-600 hover:bg-indigo-700 text-white border border-transparent"
+                onClick={() => {
+                  navigator.clipboard.writeText(publicKey.toString())
+                  toast({
+                    title: "Address Copied",
+                    description: "Wallet address copied to clipboard",
+                  })
+                  setShowReceiveDialog(false)
+                }}
+              >
+                <Copy className="h-4 w-4" />
+                Copy Address
+              </Button>
+            </div>
+          ) : (
+            <p className="text-center text-gray-400 py-8">Connect your wallet to see your address.</p>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

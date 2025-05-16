@@ -18,6 +18,7 @@ interface Pool {
   monthlyReturn: string; // Or number, adjust based on your data model
   location: string;
   imageUrl?: string; // Optional: if you have images for pools
+  pool_wallet_address?: string; // Wallet address for this specific pool
 }
 
 // Define props for the PoolDetailClient component

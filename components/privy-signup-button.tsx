@@ -13,7 +13,7 @@ interface PrivySignupButtonProps {
 
 export default function PrivySignupButton({
   className = '',
-  variant = 'outline',
+  variant = 'default',
   size = 'default'
 }: PrivySignupButtonProps) {
   const { login, ready } = usePrivy();
@@ -33,10 +33,11 @@ export default function PrivySignupButton({
   return (
     <Button
       onClick={handleSignup}
-      className={className}
+      className={`bg-primary text-primary-foreground hover:bg-primary/90 ${className}`}
       variant={variant}
       size={size}
       disabled={isLoading || !ready}
+      style={{ borderRadius: '8px', fontWeight: 600 }}
     >
       {isLoading ? (
         <>

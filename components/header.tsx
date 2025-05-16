@@ -33,13 +33,16 @@ export default function Header() {
     // If it still needs to be client-side only, the dynamic import approach would be kept.
     // For now, let's try direct import as per the user's provided snippet.
     try {
-      if (typeof waapi.animate === 'function') {
-        waapi.animate('.monacre-logo-animate', {
+      const logoElement = document.querySelector('.monacre-logo-animate');
+      if (logoElement && typeof waapi.animate === 'function') {
+        waapi.animate(logoElement, {
           rotate: '1turn',
           duration: 2000,
           loop: true,
-          easing: eases.inOutSine // Corrected typo from easeInOutSine to inOutSine
+          easing: 'easeInOutSine' // Corrected easing value as per animejs docs
         });
+      } else if (!logoElement) {
+        console.error('Animation target .monacre-logo-animate not found.');
       } else {
         console.error('Failed to initialize animejs waapi. `waapi.animate` is not a function.');
       }
